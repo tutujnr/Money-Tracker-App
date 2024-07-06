@@ -1,0 +1,106 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Tracker App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #0000ff; 
+            background-image: radial-gradient(circle, #130fe7 10%, transparent 10%),
+                              radial-gradient(circle, #370fe7 10%, transparent 10%);
+            background-size: 20px 20px; 
+            background-position: 0 0, 10px 10px; 
+        }
+        
+        .container {
+            background-color: #ffffff; 
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+            max-width: 600px; 
+            margin: auto; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5 mb-4 text-center">Money Tracker App</h1>
+        
+        <form id="expenseForm" action="/expenses" method="post">
+            <div class="form-group">
+                <label for="expenseName">Expense Name</label>
+                <input type="text" class="form-control" id="expenseName" name= 'name' placeholder="Enter expense name" required>
+            </div>
+            <div class="form-group">
+                <label for="expenseAmount">Amount</label>
+                <input type="number" class="form-control" id="expenseAmount" name = 'amount' placeholder="Enter amount" required>
+            </div>
+            <button type="submit" class="btn btn-primary" id="addExpenseBtn">Add Expense</button>
+        </form>
+        
+        <hr>
+        
+        <h3 class="mb-4">Expenses</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Expense Name</th>
+                    <th>Expense Amount</th>
+                </tr>
+            </thead>
+            <tbody id="expensesList"></tbody>
+        </table>
+        <div class="total">
+            <h3>Total Expenses:</h3>
+            <p id="totalExpenses">$0</p>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        let totalExpenses = 0;
+        const expensesList = [];
+
+        function submit() {
+            const expenseNameInput = document.getElementById('expenseName');
+            const expenseAmountInput = document.getElementById('expenseAmount');
+
+            const expenseName = expenseNameInput.value.trim();
+            const expenseAmount = parseFloat(expenseAmountInput.value);
+
+            if (expenseName === '' || isNaN(expenseAmount)) {
+                alert('Please enter both expense name and valid amount.');
+                return;
+            }
+
+            totalExpenses += expenseAmount;
+            expensesList.push({ name: expenseName, amount: expenseAmount });
+
+            updateUI();
+            expenseNameInput.value = '';
+            expenseAmountInput.value = '';
+        }
+
+        function updateUI() {
+            const totalExpensesElement = document.getElementById('totalExpenses');
+            totalExpensesElement.textContent = `$${totalExpenses.toFixed(2)}`;
+
+            const expensesListElement = document.getElementById('expensesList');
+            expensesListElement.innerHTML = '';
+
+            expensesList.forEach((expense, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${expense.name}</td>
+                    <td>$${expense.amount.toFixed(2)}</td>
+                `;
+                expensesListElement.appendChild(row);
+            });
+        }
+    </script>
+</body>
+</html>
